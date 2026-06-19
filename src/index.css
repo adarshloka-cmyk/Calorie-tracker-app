@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+
+@import "tailwindcss";
+
+@theme {
+  --color-brand-bg: #F8F4EF;
+  --color-brand-surface: #FFFFFF;
+  --color-brand-primary: #6D001F;
+  --color-brand-secondary: #B42318;
+  --color-brand-accent: #FF6B00;
+  --color-brand-text: #2A1E1E;
+  
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  --font-display: 'Outfit', sans-serif;
+}
+
+@layer base {
+  body {
+    background-color: #F8F4EF;
+    color: #2A1E1E;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    overflow-x: hidden;
+    margin: 0;
+  }
+}
+
+/* Scroll snapping properties */
+.snap-container {
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+  height: 100vh;
+  scroll-behavior: smooth;
+}
+
+.snap-section {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  height: 100vh;
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+/* Hide scrollbar utilities */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Bubbly card layout with flat drop shadow (Duolingo style) */
+.bubbly-card {
+  background: #FFFFFF;
+  border: 3.5px solid #6D001F;
+  border-radius: 24px;
+  box-shadow: 4px 4px 0 0 #6D001F;
+  transition: all 0.2s ease-in-out;
+}
+
+.bubbly-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 0 #6D001F;
+}
+
+/* Float Animations for Social Badges */
+@keyframes float-badge-1 {
+  0%, 100% { transform: translateY(0px) rotate(0.5deg); }
+  50% { transform: translateY(-8px) rotate(-0.5deg); }
+}
+
+@keyframes float-badge-2 {
+  0%, 100% { transform: translateY(0px) rotate(-0.5deg); }
+  50% { transform: translateY(-6px) rotate(0.5deg); }
+}
+
+.float-c-1 {
+  animation: float-badge-1 5s ease-in-out infinite;
+}
+
+.float-c-2 {
+  animation: float-badge-2 6s ease-in-out infinite;
+}
+
+.float-c-3 {
+  animation: float-badge-1 7s ease-in-out infinite;
+}
