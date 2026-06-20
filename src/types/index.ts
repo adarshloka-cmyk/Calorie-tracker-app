@@ -51,6 +51,9 @@ export interface MealLog {
   calories: number;
   image_url: string | null;
   created_at: string;
+  // AI logging metadata (nullable — manual logs will have these as null)
+  original_user_text?: string | null;
+  detected_foods_json?: Array<{ name: string; calories: number }> | null;
   profiles?: Profile;
   reactions?: Reaction[];
   comments?: Comment[];

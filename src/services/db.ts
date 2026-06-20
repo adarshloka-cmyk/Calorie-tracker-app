@@ -186,12 +186,14 @@ export const useAddMealLog = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ clubId, userId, foodName, calories, imageUrl }: {
+    mutationFn: async ({ clubId, userId, foodName, calories, imageUrl, originalUserText, detectedFoodsJson }: {
       clubId: string;
       userId: string;
       foodName: string;
       calories: number;
       imageUrl?: string | null;
+      originalUserText?: string | null;
+      detectedFoodsJson?: Array<{ name: string; calories: number }> | null;
     }) => {
       const { data, error } = await supabase
         .from('meal_logs')
@@ -200,7 +202,9 @@ export const useAddMealLog = () => {
           user_id: userId,
           food_name: foodName,
           calories,
-          image_url: imageUrl || null
+          image_url: imageUrl || null,
+          original_user_text: originalUserText || null,
+          detected_foods_json: detectedFoodsJson || null,
         })
         .select()
         .single();

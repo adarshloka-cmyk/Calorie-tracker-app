@@ -55,6 +55,13 @@ export default function Club() {
   const [calories, setCalories] = useState('');
   const [composerError, setComposerError] = useState<string | null>(null);
 
+  // AI Logging State
+  const [mealDescription, setMealDescription] = useState('');
+  const [isEstimating, setIsEstimating] = useState(false);
+  const [aiResult, setAiResult] = useState<{ foods: Array<{ name: string; calories: number }>; totalCalories: number } | null>(null);
+  const [aiError, setAiError] = useState<string | null>(null);
+  const [showManualFallback, setShowManualFallback] = useState(false);
+
   // Delete Club State
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deletingClub, setDeletingClub] = useState(false);
@@ -147,11 +154,59 @@ export default function Club() {
         imageUrl: null
       });
 
-      // Reset form
       setFoodName('');
       setCalories('');
+      setShowManualFallback(false);
     } catch (err: any) {
       console.error(err);
+      setComposerError(err.message || 'Failed to submit log. Please try again.');
+    }
+  };
+
+  const handleEstimate = async () => {
+    if (!mealDescription.trim()) return;
+    setIsEstimating(true);
+    setAiError(null);
+    setAiResult(null);
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/estimate-calories`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({ description: mealDescription.trim() }),
+        }
+      );
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Estimation failed');
+      setAiResult(data);
+    } catch (err: any) {
+      setAiError(err.message || 'AI estimation failed. Use manual entry below.');
+    } finally {
+      setIsEstimating(false);
+    }
+  };
+
+  const handleConfirmAiLog = async () => {
+    if (!user || !clubId || !aiResult) return;
+    setComposerError(null);
+    try {
+      await addMealLogMutation.mutateAsync({
+        clubId,
+        userId: user.id,
+        foodName: mealDescription.trim(),
+        calories: aiResult.totalCalories,
+        imageUrl: null,
+        originalUserText: mealDescription.trim(),
+        detectedFoodsJson: aiResult.foods,
+      });
+      setMealDescription('');
+      setAiResult(null);
+      setAiError(null);
+    } catch (err: any) {
       setComposerError(err.message || 'Failed to submit log. Please try again.');
     }
   };
@@ -329,62 +384,168 @@ export default function Club() {
           {/* Main Feed Section */}
           <div className={`md:col-span-2 space-y-6 ${activeTab === 'feed' ? 'block' : 'hidden md:block'}`}>
             
-            {/* Meal Log Composer Card */}
+            {/* Meal Log Composer Card — AI-First with Manual Fallback */}
             <Card hoverable={false} className="border-[3.5px] p-5 sm:p-6 bg-white">
-              <h3 className="font-display font-black text-xl text-brand-primary mb-4 flex items-center gap-2">
+              <h3 className="font-display font-black text-xl text-brand-primary mb-1 flex items-center gap-2">
                 <Utensils className="w-5 h-5 text-brand-accent" />
                 <span>Log a Meal</span>
+                <span className="ml-auto text-[9px] font-bold text-brand-primary/40 uppercase tracking-widest border border-brand-primary/20 px-2 py-0.5 rounded-full">AI ✨</span>
               </h3>
+              <p className="text-[11px] font-bold text-brand-primary/50 mb-4">
+                Describe what you ate — AI will estimate the calories.
+              </p>
 
+              {/* AI Error Banner */}
+              {aiError && (
+                <div className="mb-4 p-3 bg-amber-50 border-2 border-amber-300 rounded-xl text-xs font-bold text-amber-800 flex items-start gap-2">
+                  <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-amber-500" />
+                  <span>{aiError}</span>
+                </div>
+              )}
+
+              {/* Composer Error Banner */}
               {composerError && (
                 <div className="mb-4 p-3 bg-red-50 border-2 border-brand-secondary/20 rounded-xl text-xs font-bold text-brand-secondary">
                   {composerError}
                 </div>
               )}
 
-              <form onSubmit={handleAddLog} className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-[10px] font-black text-brand-primary uppercase tracking-wider mb-1.5">
-                      Food Name
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={foodName}
-                      onChange={(e) => setFoodName(e.target.value)}
-                      placeholder="e.g. Chicken Biryani, Avocado Toast"
-                      className="block w-full px-3 py-2.5 border-[2.5px] border-brand-primary rounded-xl focus:outline-none focus:ring-0 text-sm font-bold bg-[#F8F4EF]/30 placeholder-brand-primary/30"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-black text-brand-primary uppercase tracking-wider mb-1.5">
-                      Calories (kcal)
-                    </label>
-                    <input
-                      type="number"
-                      required
-                      value={calories}
-                      onChange={(e) => setCalories(e.target.value)}
-                      placeholder="e.g. 680"
-                      min={1}
-                      className="block w-full px-3 py-2.5 border-[2.5px] border-brand-primary rounded-xl focus:outline-none focus:ring-0 text-sm font-bold bg-[#F8F4EF]/30 placeholder-brand-primary/30"
-                    />
-                  </div>
+              {/* AI Textarea Input */}
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-[10px] font-black text-brand-primary uppercase tracking-wider mb-1.5">
+                    What did you eat?
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={mealDescription}
+                    onChange={(e) => {
+                      setMealDescription(e.target.value);
+                      setAiResult(null);
+                      setAiError(null);
+                    }}
+                    placeholder="e.g. 2 idlis, sambar and coffee"
+                    className="block w-full px-3 py-2.5 border-[2.5px] border-brand-primary rounded-xl focus:outline-none focus:ring-0 text-sm font-bold bg-[#F8F4EF]/30 placeholder-brand-primary/30 resize-none leading-relaxed"
+                  />
                 </div>
 
-                <div className="flex justify-end pt-2">
-                  <Button
-                    type="submit"
-                    variant="primary"
-                    className="py-2.5 px-6 text-sm"
-                    disabled={addMealLogMutation.isPending}
-                  >
-                    {addMealLogMutation.isPending ? 'Logging...' : 'Post Log 🚀'}
-                  </Button>
+                {/* AI Result Breakdown */}
+                {aiResult && (
+                  <div className="bg-[#F8F4EF] border-2 border-brand-primary/20 rounded-xl p-3.5 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black text-brand-primary uppercase tracking-wider">🤖 AI Estimate</span>
+                      <span className="font-mono font-black text-brand-primary text-base">{aiResult.totalCalories} kcal</span>
+                    </div>
+                    <div className="space-y-1">
+                      {aiResult.foods.map((item, i) => (
+                        <div key={i} className="flex items-center justify-between text-xs">
+                          <span className="text-brand-text font-semibold">• {item.name}</span>
+                          <span className="font-mono font-bold text-brand-primary/70">{item.calories} kcal</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Action Buttons */}
+                <div className="flex flex-wrap items-center gap-2 pt-1">
+                  {!aiResult ? (
+                    <button
+                      type="button"
+                      onClick={handleEstimate}
+                      disabled={isEstimating || !mealDescription.trim()}
+                      className="flex-1 py-2.5 px-4 bg-brand-primary text-white rounded-xl font-black text-sm shadow-[3px_3px_0_0_#400012] active:translate-y-[1px] active:shadow-none transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-y-0 flex items-center justify-center gap-2"
+                    >
+                      {isEstimating ? (
+                        <>
+                          <svg className="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                          </svg>
+                          <span>Estimating...</span>
+                        </>
+                      ) : (
+                        <span>✨ Estimate Calories</span>
+                      )}
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleConfirmAiLog}
+                      disabled={addMealLogMutation.isPending}
+                      className="flex-1 py-2.5 px-4 bg-brand-primary text-white rounded-xl font-black text-sm shadow-[3px_3px_0_0_#400012] active:translate-y-[1px] active:shadow-none transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                    >
+                      {addMealLogMutation.isPending ? 'Logging...' : 'Post Log 🚀'}
+                    </button>
+                  )}
+
+                  {aiResult && (
+                    <button
+                      type="button"
+                      onClick={() => { setAiResult(null); setAiError(null); }}
+                      className="py-2.5 px-3 border-2 border-brand-primary/30 rounded-xl font-bold text-xs text-brand-primary hover:border-brand-primary transition-all"
+                    >
+                      Re-estimate
+                    </button>
+                  )}
                 </div>
-              </form>
+              </div>
+
+              {/* Manual Entry Fallback — Collapsed by Default */}
+              <div className="mt-4 border-t border-brand-primary/10 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowManualFallback((v) => !v)}
+                  className="flex items-center gap-1.5 text-[10px] font-black text-brand-primary/50 uppercase tracking-wider hover:text-brand-primary transition-colors"
+                >
+                  <span>{showManualFallback ? '▾' : '▸'}</span>
+                  <span>Enter calories manually</span>
+                </button>
+
+                {showManualFallback && (
+                  <form onSubmit={handleAddLog} className="mt-3 space-y-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-[10px] font-black text-brand-primary uppercase tracking-wider mb-1.5">
+                          Food Name
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={foodName}
+                          onChange={(e) => setFoodName(e.target.value)}
+                          placeholder="e.g. Chicken Biryani"
+                          className="block w-full px-3 py-2 border-[2.5px] border-brand-primary/50 rounded-xl focus:border-brand-primary focus:outline-none text-sm font-bold bg-[#F8F4EF]/30 placeholder-brand-primary/30"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-black text-brand-primary uppercase tracking-wider mb-1.5">
+                          Calories (kcal)
+                        </label>
+                        <input
+                          type="number"
+                          required
+                          value={calories}
+                          onChange={(e) => setCalories(e.target.value)}
+                          placeholder="e.g. 680"
+                          min={1}
+                          className="block w-full px-3 py-2 border-[2.5px] border-brand-primary/50 rounded-xl focus:border-brand-primary focus:outline-none text-sm font-bold bg-[#F8F4EF]/30 placeholder-brand-primary/30"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex justify-end">
+                      <Button
+                        type="submit"
+                        variant="secondary"
+                        className="py-2 px-5 text-sm"
+                        disabled={addMealLogMutation.isPending}
+                      >
+                        {addMealLogMutation.isPending ? 'Logging...' : 'Log Manually'}
+                      </Button>
+                    </div>
+                  </form>
+                )}
+              </div>
             </Card>
 
             {/* Logs Timeline — Activity Feed */}
