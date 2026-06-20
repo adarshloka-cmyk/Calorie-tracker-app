@@ -83,7 +83,7 @@ export default function Dashboard() {
     <div className="min-h-screen bg-[#F8F4EF] font-sans text-brand-text pb-20">
       {/* Header Navigation */}
       <header className="border-b-[3.5px] border-brand-primary bg-white py-4 sticky top-0 z-40">
-        <div className="max-w-[1280px] mx-auto px-6 flex items-center justify-between">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 flex items-center justify-between">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/dashboard')}>
             <span className="font-display font-black text-2xl tracking-tighter text-brand-primary">
               FITCLUB
@@ -110,11 +110,11 @@ export default function Dashboard() {
       </header>
 
       {/* Main Grid */}
-      <main className="max-w-[1280px] mx-auto px-6 mt-10">
+      <main className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-10">
         {/* Welcome Section */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
           <div>
-            <h1 className="font-display font-black text-4xl sm:text-5xl text-brand-primary tracking-tight">
+            <h1 className="font-display font-black text-2xl sm:text-5xl text-brand-primary tracking-tight">
               Welcome back, {profile?.username}.
             </h1>
             <p className="text-sm font-bold text-brand-primary/60 mt-1">
@@ -166,7 +166,7 @@ export default function Dashboard() {
                 {clubs.map((club) => (
                   <Card 
                     key={club.id} 
-                    className="cursor-pointer border-[3.5px] p-6 hover:shadow-[6px_6px_0_0_#6D001F] transition-all flex flex-col justify-between h-[160px]"
+                    className="cursor-pointer border-[3.5px] p-6 hover:shadow-[6px_6px_0_0_#6D001F] transition-all flex flex-col justify-between min-h-[160px] h-auto"
                     onClick={() => navigate(`/club/${club.id}`)}
                   >
                     <div>

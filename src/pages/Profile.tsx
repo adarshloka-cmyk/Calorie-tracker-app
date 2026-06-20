@@ -78,7 +78,7 @@ export default function Profile() {
     <div className="min-h-screen bg-[#F8F4EF] font-sans text-brand-text pb-20">
       {/* Navigation Header */}
       <header className="border-b-[3.5px] border-brand-primary bg-white py-4 sticky top-0 z-40">
-        <div className="max-w-[1280px] mx-auto px-6 flex items-center gap-4">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 flex items-center gap-4">
           <button 
             onClick={() => navigate('/dashboard')} 
             className="p-2 border-2 border-brand-primary rounded-full hover:bg-[#F8F4EF] transition-all text-brand-primary cursor-pointer"
@@ -92,8 +92,8 @@ export default function Profile() {
       </header>
 
       {/* Profile Info & Stats */}
-      <main className="max-w-[760px] mx-auto px-6 mt-12">
-        <Card hoverable={false} className="border-[3.5px] p-8 bg-white mb-8">
+      <main className="max-w-[760px] mx-auto px-4 sm:px-6 mt-12">
+        <Card hoverable={false} className="border-[3.5px] p-5 sm:p-8 bg-white mb-8">
           <div className="flex flex-col sm:flex-row items-center gap-6 pb-6 border-b-[3px] border-brand-primary/10">
             {profile?.avatar_url ? (
               <img 
@@ -118,39 +118,39 @@ export default function Profile() {
           </div>
 
           {/* Core metrics grids */}
-          <div className="grid grid-cols-3 gap-4 py-8">
-            <div className="text-center p-4 bg-[#F8F4EF]/50 rounded-2xl border-2 border-brand-primary/10">
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 py-6 sm:py-8">
+            <div className="text-center p-2 sm:p-4 bg-[#F8F4EF]/50 rounded-2xl border-2 border-brand-primary/10">
               <div className="flex justify-center mb-1 text-brand-accent">
-                <Flame className={`w-6 h-6 ${currentStreak > 0 ? 'fill-brand-accent' : ''}`} />
+                <Flame className={`w-5 h-5 sm:w-6 sm:h-6 ${currentStreak > 0 ? 'fill-brand-accent' : ''}`} />
               </div>
-              <span className="block font-display font-black text-3xl text-brand-primary font-mono leading-tight">
+              <span className="block font-display font-black text-xl sm:text-3xl text-brand-primary font-mono leading-tight">
                 {currentStreak}
               </span>
-              <span className="text-[10px] font-black text-brand-primary/50 uppercase tracking-wider">
+              <span className="text-[8px] sm:text-[10px] font-black text-brand-primary/50 uppercase tracking-wider block">
                 Current Streak
               </span>
             </div>
 
-            <div className="text-center p-4 bg-[#F8F4EF]/50 rounded-2xl border-2 border-brand-primary/10">
+            <div className="text-center p-2 sm:p-4 bg-[#F8F4EF]/50 rounded-2xl border-2 border-brand-primary/10">
               <div className="flex justify-center mb-1 text-[#FFB000]">
-                <Award className="w-6 h-6 fill-[#FFB000]/20" />
+                <Award className={`w-5 h-5 sm:w-6 sm:h-6 ${longestStreak > 0 ? 'fill-[#FFB000]/20' : ''}`} />
               </div>
-              <span className="block font-display font-black text-3xl text-brand-primary font-mono leading-tight">
+              <span className="block font-display font-black text-xl sm:text-3xl text-brand-primary font-mono leading-tight">
                 {longestStreak}
               </span>
-              <span className="text-[10px] font-black text-brand-primary/50 uppercase tracking-wider">
+              <span className="text-[8px] sm:text-[10px] font-black text-brand-primary/50 uppercase tracking-wider block">
                 Longest Streak
               </span>
             </div>
 
-            <div className="text-center p-4 bg-[#F8F4EF]/50 rounded-2xl border-2 border-brand-primary/10">
+            <div className="text-center p-2 sm:p-4 bg-[#F8F4EF]/50 rounded-2xl border-2 border-brand-primary/10">
               <div className="flex justify-center mb-1 text-brand-primary/60">
-                <Calendar className="w-6 h-6" />
+                <Calendar className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
-              <span className="block font-display font-black text-3xl text-brand-primary font-mono leading-tight">
+              <span className="block font-display font-black text-xl sm:text-3xl text-brand-primary font-mono leading-tight">
                 {totalLogs}
               </span>
-              <span className="text-[10px] font-black text-brand-primary/50 uppercase tracking-wider">
+              <span className="text-[8px] sm:text-[10px] font-black text-brand-primary/50 uppercase tracking-wider block">
                 Total Logs
               </span>
             </div>

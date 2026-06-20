@@ -12,10 +12,10 @@ export default function HowItWorks() {
   return (
     <section id="how-it-works" className="snap-section bg-[#F8F4EF]">
       {/* Shared Container Width (1280px) */}
-      <div className="w-full max-w-[1280px] mx-auto px-6 flex flex-col items-center justify-center h-full pt-16">
+      <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 flex flex-col items-center justify-center h-auto md:h-full pt-12 md:pt-16">
         
         {/* Section Header */}
-        <div className="text-center mb-10">
+        <div className="text-center mb-6 md:mb-10">
           <span className="text-xs font-extrabold uppercase tracking-widest text-brand-primary mb-2 block font-display">
             The Journey
           </span>
@@ -25,7 +25,7 @@ export default function HowItWorks() {
         </div>
 
         {/* Stacked Journey Cards */}
-        <div className="w-full max-w-[360px] flex flex-col gap-1 relative z-10">
+        <div className="w-full max-w-[288px] xs:max-w-[320px] sm:max-w-[360px] flex flex-col gap-1 relative z-10">
           {JOURNEY.map((item, idx) => (
             <React.Fragment key={idx}>
               {/* Step Card */}

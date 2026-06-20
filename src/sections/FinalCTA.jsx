@@ -18,18 +18,18 @@ export default function FinalCTA() {
   return (
     <section className="snap-section bg-[#F8F4EF]">
       {/* Shared Container Width (1280px) */}
-      <div className="w-full max-w-[1280px] mx-auto px-6 flex flex-col justify-between h-full pt-24 pb-8 relative z-10">
+      <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 flex flex-col justify-between h-auto md:h-full pt-12 pb-6 md:pt-24 md:pb-8 relative z-10">
         
         {/* Empty push placeholder */}
-        <div />
+        <div className="hidden md:block" />
 
         {/* Tactile Maroon CTA Card */}
-        <div className="w-full max-w-[760px] mx-auto bg-brand-primary border-[3.5px] border-brand-primary rounded-[28px] p-8 sm:p-12 shadow-[6px_6px_0_0_#400012] text-white text-center flex flex-col items-center justify-center relative overflow-hidden">
+        <div className="w-full max-w-[760px] mx-auto bg-brand-primary border-[3.5px] border-brand-primary rounded-[28px] p-6 sm:p-12 shadow-[6px_6px_0_0_#400012] text-white text-center flex flex-col items-center justify-center relative overflow-hidden">
           {/* Subtle decoration background grids */}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:20px_20px]" />
           
           {/* Headline */}
-          <h2 className="font-display font-black text-4xl sm:text-6xl text-white tracking-tight leading-[1.08] relative z-10">
+          <h2 className="font-display font-black text-3xl sm:text-6xl text-white tracking-tight leading-[1.08] relative z-10">
             Ready to start your club?
           </h2>
 
@@ -41,10 +41,10 @@ export default function FinalCTA() {
           </p>
 
           {/* Single primary button CTA */}
-          <div className="mt-8 w-full sm:w-auto relative z-10">
+          <div className="mt-8 w-full sm:w-auto relative z-10 px-4 sm:px-0">
             <Button 
               variant="secondary" 
-              className="px-10 py-4 w-full sm:w-auto text-base font-extrabold bg-white text-brand-primary border-brand-primary shadow-[0_5px_0_0_#2C030F] active:translate-y-[3px] active:shadow-none hover:bg-slate-50 border-none"
+              className="px-10 py-4 w-full sm:w-auto text-base font-extrabold bg-white text-brand-primary border-brand-primary shadow-[0_5px_0_0_#2C030F] active:translate-y-[3px] active:shadow-none hover:bg-slate-50 border-none flex items-center justify-center gap-1.5"
               onClick={handleCTA}
             >
               <span>Get Started</span>

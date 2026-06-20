@@ -65,7 +65,7 @@ export default function Auth() {
       </div>
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <Card hoverable={false} className="border-[3.5px] p-8">
+        <Card hoverable={false} className="border-[3.5px] p-6 sm:p-8">
           <h3 className="font-display font-black text-2xl text-brand-primary mb-6 text-center">
             {isSignUp ? 'Create your profile' : 'Sign in to your account'}
           </h3>

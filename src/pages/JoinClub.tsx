@@ -49,7 +49,7 @@ export default function JoinClub() {
   return (
     <div className="min-h-screen bg-[#F8F4EF] flex flex-col justify-center items-center p-6 font-sans text-brand-text">
       <div className="w-full max-w-md">
-        <Card hoverable={false} className="border-[3.5px] p-8 text-center bg-white">
+        <Card hoverable={false} className="border-[3.5px] p-6 sm:p-8 text-center bg-white">
           <span className="text-4xl block mb-4">🏃</span>
           <h2 className="font-display font-black text-2xl text-brand-primary mb-3">
             Joining Club Feed

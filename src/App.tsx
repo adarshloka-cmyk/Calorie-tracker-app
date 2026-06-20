@@ -63,7 +63,7 @@ function LandingPage() {
   }
 
   return (
-    <div className="h-screen overflow-hidden bg-[#F8F4EF]">
+    <div className="min-h-screen md:h-screen md:overflow-hidden bg-[#F8F4EF]">
       {/* Fixed Sticky Header Navbar */}
       <Navigation />
 

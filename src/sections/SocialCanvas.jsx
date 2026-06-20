@@ -5,14 +5,14 @@ export default function SocialCanvas() {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[400px] rounded-full bg-orange-100/20 blur-[120px] pointer-events-none" />
 
       {/* Container */}
-      <div className="w-full max-w-[1280px] mx-auto px-6 flex flex-col items-center justify-center h-full">
+      <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 flex flex-col items-center justify-center h-auto md:h-full">
 
         {/* Section Header */}
-        <div className="text-center mb-14">
+        <div className="text-center mb-6 md:mb-14">
           <span className="text-xs font-extrabold uppercase tracking-widest text-brand-primary mb-2 block font-display">
             Why FitClub
           </span>
-          <h2 className="font-display font-black text-3xl sm:text-5xl text-brand-primary tracking-tight leading-none mb-12">
+          <h2 className="font-display font-black text-3xl sm:text-5xl text-brand-primary tracking-tight leading-none mb-6 md:mb-12">
             Friends competing together.
           </h2>
 

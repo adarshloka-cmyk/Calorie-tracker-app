@@ -207,19 +207,7 @@ export default function Club() {
     }
   };
 
-  const handleEncourage = async (mealLogId: string, text: string) => {
-    if (!user || !clubId) return;
-    try {
-      await addEncouragementMutation.mutateAsync({
-        mealLogId,
-        userId: user.id,
-        text,
-        clubId
-      });
-    } catch (err) {
-      console.error('Failed to toggle encouragement:', err);
-    }
-  };
+
 
   const handlePostComment = async (e: React.FormEvent, mealLogId: string) => {
     e.preventDefault();
@@ -265,7 +253,7 @@ export default function Club() {
     <div className="min-h-screen bg-[#F8F4EF] font-sans text-brand-text pb-20 overflow-y-auto">
       {/* Club Header Navigation */}
       <header className="border-b-[3.5px] border-brand-primary bg-white py-4 sticky top-0 z-40">
-        <div className="max-w-[1280px] mx-auto px-6 flex items-center justify-between">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button 
               onClick={() => navigate('/dashboard')} 
@@ -295,7 +283,7 @@ export default function Club() {
               title="Copy Invite Code"
             >
               {copiedCode ? <Check className="w-3 text-green-600" /> : <Copy className="w-3" />}
-              <span>{copiedCode ? 'Copied Code!' : 'Copy Code'}</span>
+              <span className="hidden sm:inline">{copiedCode ? 'Copied Code!' : 'Copy Code'}</span>
             </button>
             <button 
               onClick={handleShareLink}
@@ -303,14 +291,14 @@ export default function Club() {
               title="Share Invite Link"
             >
               {copied ? <Check className="w-3 text-green-300" /> : <Share2 className="w-3" />}
-              <span>{copied ? 'Link Copied!' : 'Share Link'}</span>
+              <span className="hidden sm:inline">{copied ? 'Link Copied!' : 'Share Link'}</span>
             </button>
           </div>
         </div>
       </header>
 
       {/* Main Grid View */}
-      <main className="max-w-[1280px] mx-auto px-6 mt-8">
+      <main className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-8">
         
         {/* Mobile Tab Toggle */}
         <div className="flex md:hidden border-[3px] border-brand-primary rounded-2xl bg-white p-1 mb-6 shadow-[3px_3px_0_0_#6D001F]">
