@@ -64,7 +64,7 @@ export default function Hero() {
         {/* Bubbly Active Social Cards (-40% size to avoid vertical overflow) */}
         <div className="w-full max-w-2xl mt-10 md:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 px-4 sm:px-0">
 
-          {/* Card A: Rama logged Biryani */}
+          {/* Card A: Sudeep logged Biryani */}
           <div className="w-full max-w-[240px] bg-white border-[3px] border-brand-primary rounded-[22px] p-4 shadow-[4px_4px_0_0_#6D001F] text-left transform sm:-rotate-1 hover:rotate-0 hover:-translate-y-0.5 transition-all duration-200">
             <div className="flex justify-between items-center pb-2 border-b border-slate-100 mb-2">
               <span className="text-[10px] font-black text-slate-800">Breakfast Club</span>
