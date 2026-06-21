@@ -88,7 +88,7 @@ export default function Hero() {
               <div className="w-6.5 h-6.5 rounded-full bg-brand-accent text-white flex items-center justify-center text-[10px] font-black shrink-0">R</div>
               <div>
                 <h4 className="text-[10px] font-black text-slate-800">Rama</h4>
-                <p className="text-[11px] text-slate-600 mt-0.5 font-semibold font-sans">Logged <span className="font-extrabold text-brand-primary">IceCream </span></p>
+                <p className="text-[11px] text-slate-600 mt-0.5 font-semibold font-sans">Logged <span className="font-extrabold text-brand-primary">Ice Cream 🍨 </span></p>
               </div>
             </div>
           </div>
