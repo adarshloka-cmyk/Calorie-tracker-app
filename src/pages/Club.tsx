@@ -619,14 +619,15 @@ export default function Club() {
                                   className="p-1.5 hover:bg-slate-50 border border-transparent hover:border-brand-primary/20 rounded text-brand-primary/60 hover:text-brand-primary cursor-pointer"
                                   title="Edit Log"
                                 >
-                                  <Edit className="w-3.5 h-3.5" />
+                                  <Edit className="w-3.5 h-3.5 pointer-events-none" />
                                 </button>
                                 <button
                                   onClick={() => handleDeleteLog(log.id)}
-                                  className="p-1.5 hover:bg-red-50 border border-transparent hover:border-brand-secondary/20 rounded text-brand-secondary/60 hover:text-brand-secondary cursor-pointer"
+                                  disabled={deleteMealLogMutation.isPending}
+                                  className="p-1.5 hover:bg-red-50 border border-transparent hover:border-brand-secondary/20 rounded text-brand-secondary/60 hover:text-brand-secondary cursor-pointer disabled:opacity-50"
                                   title="Delete Log"
                                 >
-                                  <Trash2 className="w-3.5 h-3.5" />
+                                  <Trash2 className="w-3.5 h-3.5 pointer-events-none" />
                                 </button>
                               </div>
                             )}
