@@ -5,12 +5,117 @@ import { useProfileStats } from '../services/db';
 import { supabase } from '../services/supabase';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
-import { ArrowLeft, Flame, Award, Calendar, RefreshCw, User as UserIcon, Sparkles, Check } from 'lucide-react';
+import { 
+  ArrowLeft, 
+  Flame, 
+  Award, 
+  Calendar, 
+  RefreshCw, 
+  User as UserIcon, 
+  Sparkles, 
+  Check,
+  ChevronDown,
+  ChevronUp,
+  BarChart2
+} from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+
+const formatGroupDate = (dateStr: string): string => {
+  const d = new Date(dateStr);
+  const today = new Date();
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  if (d.toDateString() === today.toDateString()) {
+    return 'Today';
+  } else if (d.toDateString() === yesterday.toDateString()) {
+    return 'Yesterday';
+  } else {
+    const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
+    if (d.getFullYear() !== today.getFullYear()) {
+      options.year = 'numeric';
+    }
+    return d.toLocaleDateString(undefined, options);
+  }
+};
+
+const formatTime = (dateStr: string): string => {
+  const d = new Date(dateStr);
+  return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+};
+
+interface MealLogItem {
+  created_at: string;
+  food_name: string;
+  calories: number;
+}
+
+interface GroupedDay {
+  dateString: string;
+  formattedDate: string;
+  totalCalories: number;
+  mealsCount: number;
+  meals: MealLogItem[];
+}
+
+const groupLogsByDate = (logs: MealLogItem[]): GroupedDay[] => {
+  const groups: Record<string, GroupedDay> = {};
+
+  logs.forEach(log => {
+    const d = new Date(log.created_at);
+    const dateKey = d.toDateString();
+    
+    if (!groups[dateKey]) {
+      groups[dateKey] = {
+        dateString: dateKey,
+        formattedDate: formatGroupDate(log.created_at),
+        totalCalories: 0,
+        mealsCount: 0,
+        meals: []
+      };
+    }
+    
+    groups[dateKey].totalCalories += log.calories;
+    groups[dateKey].mealsCount += 1;
+    groups[dateKey].meals.push(log);
+  });
+
+  return Object.values(groups).sort((a, b) => {
+    const timeA = new Date(a.meals[0].created_at).getTime();
+    const timeB = new Date(b.meals[0].created_at).getTime();
+    return timeB - timeA;
+  });
+};
 
 export default function Profile() {
   const { user, profile, refreshProfile } = useAuth();
   const navigate = useNavigate();
   const { data: stats, isLoading, refetch } = useProfileStats(user?.id);
+
+  // Calorie History Query & State
+  const { data: userLogs, isLoading: loadingLogs } = useQuery<MealLogItem[]>({
+    queryKey: ['user-meal-logs', user?.id],
+    queryFn: async () => {
+      if (!user?.id) return [];
+      const { data, error } = await supabase
+        .from('meal_logs')
+        .select('created_at, food_name, calories')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return (data || []) as MealLogItem[];
+    },
+    enabled: !!user?.id,
+  });
+
+  const [expandedDays, setExpandedDays] = useState<Record<string, boolean>>({});
+
+  const toggleExpand = (dateString: string) => {
+    setExpandedDays(prev => ({
+      ...prev,
+      [dateString]: !prev[dateString]
+    }));
+  };
 
   const [avatarUrl, setAvatarUrl] = useState('');
   const [calorieGoal, setCalorieGoal] = useState('');
@@ -73,6 +178,15 @@ export default function Profile() {
   const currentStreak = stats?.streak?.current_streak || 0;
   const longestStreak = stats?.streak?.longest_streak || 0;
   const totalLogs = stats?.totalLogs || 0;
+
+  // Dynamic statistics calculations
+  const logs = userLogs || [];
+  const totalMeals = logs.length;
+  const totalCalories = logs.reduce((sum, log) => sum + log.calories, 0);
+
+  const distinctDays = new Set(logs.map(log => new Date(log.created_at).toDateString()));
+  const distinctDaysCount = distinctDays.size;
+  const avgDailyCalories = distinctDaysCount > 0 ? Math.round(totalCalories / distinctDaysCount) : 0;
 
   return (
     <div className="min-h-screen bg-[#F8F4EF] font-sans text-brand-text pb-20">
@@ -261,6 +375,149 @@ export default function Profile() {
               </Button>
             </div>
           </form>
+        </Card>
+
+        {/* Feature 3 — Lifetime Statistics */}
+        <Card hoverable={false} className="border-[3.5px] p-5 sm:p-8 bg-white mb-8">
+          <h3 className="font-display font-black text-xl text-brand-primary mb-6 flex items-center gap-2">
+            <BarChart2 className="w-5 h-5 text-brand-accent" />
+            Lifetime Statistics
+          </h3>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+            <div className="text-center p-3 sm:p-4 bg-[#F8F4EF]/55 rounded-2xl border-2 border-brand-primary/10">
+              <span className="block font-display font-black text-xl sm:text-2xl text-brand-primary font-mono leading-tight">
+                {totalMeals}
+              </span>
+              <span className="text-[9px] sm:text-[10px] font-black text-brand-primary/50 uppercase tracking-wider block mt-1">
+                Meals Logged
+              </span>
+            </div>
+
+            <div className="text-center p-3 sm:p-4 bg-[#F8F4EF]/55 rounded-2xl border-2 border-brand-primary/10">
+              <span className="block font-display font-black text-xl sm:text-2xl text-brand-primary font-mono leading-tight">
+                {totalCalories.toLocaleString()}
+              </span>
+              <span className="text-[9px] sm:text-[10px] font-black text-brand-primary/50 uppercase tracking-wider block mt-1">
+                Calories Logged
+              </span>
+            </div>
+
+            <div className="text-center p-3 sm:p-4 bg-[#F8F4EF]/55 rounded-2xl border-2 border-brand-primary/10">
+              <span className="block font-display font-black text-xl sm:text-2xl text-brand-primary font-mono leading-tight">
+                {avgDailyCalories.toLocaleString()}
+              </span>
+              <span className="text-[9px] sm:text-[10px] font-black text-brand-primary/50 uppercase tracking-wider block mt-1">
+                Avg Daily kcal
+              </span>
+            </div>
+
+            <div className="text-center p-3 sm:p-4 bg-[#F8F4EF]/55 rounded-2xl border-2 border-brand-primary/10">
+              <div className="flex justify-center mb-1 text-brand-accent">
+                <Flame className={`w-4 h-4 sm:w-5 sm:h-5 ${currentStreak > 0 ? 'fill-brand-accent' : ''}`} />
+              </div>
+              <span className="block font-display font-black text-lg sm:text-xl text-brand-primary font-mono leading-tight">
+                {currentStreak}d
+              </span>
+              <span className="text-[8px] sm:text-[9px] font-black text-brand-primary/50 uppercase tracking-wider block mt-0.5">
+                Current Streak
+              </span>
+            </div>
+
+            <div className="text-center p-3 sm:p-4 bg-[#F8F4EF]/55 rounded-2xl border-2 border-brand-primary/10">
+              <div className="flex justify-center mb-1 text-[#FFB000]">
+                <Award className={`w-4 h-4 sm:w-5 sm:h-5 ${longestStreak > 0 ? 'fill-[#FFB000]/20' : ''}`} />
+              </div>
+              <span className="block font-display font-black text-lg sm:text-xl text-brand-primary font-mono leading-tight">
+                {longestStreak}d
+              </span>
+              <span className="text-[8px] sm:text-[9px] font-black text-brand-primary/50 uppercase tracking-wider block mt-0.5">
+                Best Streak
+              </span>
+            </div>
+          </div>
+        </Card>
+
+        {/* Feature 1 & 2 — Calorie History */}
+        <Card hoverable={false} className="border-[3.5px] p-5 sm:p-8 bg-white mb-8">
+          <h3 className="font-display font-black text-xl text-brand-primary mb-6 flex items-center gap-2">
+            <Calendar className="w-5 h-5 text-brand-accent" />
+            Calorie History
+          </h3>
+
+          {loadingLogs ? (
+            <div className="py-8 text-center text-brand-primary/50 font-bold text-sm">
+              Loading calorie history...
+            </div>
+          ) : logs.length === 0 ? (
+            <div className="border-[3px] border-dashed border-brand-primary/20 rounded-[24px] p-8 text-center bg-white/50">
+              <p className="text-sm font-bold text-brand-primary/60">
+                No logs recorded yet. Start tracking to see your calorie history!
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {groupLogsByDate(logs).map((day) => {
+                const isExpanded = !!expandedDays[day.dateString];
+                return (
+                  <div 
+                    key={day.dateString} 
+                    className="border-[3.5px] border-brand-primary rounded-2xl overflow-hidden transition-all bg-white shadow-[2px_2px_0_0_#6D001F]"
+                  >
+                    {/* Day Header Summary */}
+                    <button 
+                      type="button"
+                      onClick={() => toggleExpand(day.dateString)}
+                      className="w-full flex items-center justify-between p-4 text-left cursor-pointer hover:bg-slate-50 transition-colors focus:outline-none"
+                    >
+                      <div>
+                        <span className="font-display font-black text-sm sm:text-base text-brand-primary">
+                          {day.formattedDate}
+                        </span>
+                        <span className="block text-[10px] font-bold text-brand-primary/50 mt-0.5">
+                          {day.mealsCount} {day.mealsCount === 1 ? 'meal' : 'meals'} logged
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="font-mono font-black text-xs sm:text-sm text-brand-primary bg-[#F8F4EF] border-2 border-brand-primary px-3 py-1 rounded-full">
+                          {day.totalCalories} kcal
+                        </span>
+                        {isExpanded ? (
+                          <ChevronUp className="w-4.5 h-4.5 text-brand-primary/70 shrink-0" />
+                        ) : (
+                          <ChevronDown className="w-4.5 h-4.5 text-brand-primary/70 shrink-0" />
+                        )}
+                      </div>
+                    </button>
+                    
+                    {/* Expanded Daily Details */}
+                    {isExpanded && (
+                      <div className="border-t-[3px] border-brand-primary bg-[#F8F4EF]/30 p-4 space-y-3">
+                        {day.meals.map((meal, index) => (
+                          <div 
+                            key={index} 
+                            className="flex justify-between items-center text-xs font-semibold py-2 border-b border-brand-primary/10 last:border-0 last:pb-0"
+                          >
+                            <div className="min-w-0 flex-1 pr-4">
+                              <span className="text-[10px] font-bold text-brand-primary/50 font-mono block">
+                                {formatTime(meal.created_at)}
+                              </span>
+                              <span className="text-brand-text font-black block mt-0.5 truncate">
+                                {meal.food_name}
+                              </span>
+                            </div>
+                            <span className="font-mono font-black text-brand-primary shrink-0">
+                              {meal.calories} kcal
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </Card>
       </main>
     </div>
