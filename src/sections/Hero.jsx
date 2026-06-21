@@ -78,8 +78,22 @@ export default function Hero() {
               </div>
             </div>
           </div>
+          {/* Card B: Rama logged Icecream */}
+          <div className="w-full max-w-[240px] bg-white border-[3px] border-brand-primary rounded-[22px] p-4 shadow-[4px_4px_0_0_#6D001F] text-left transform sm:-rotate-1 hover:rotate-0 hover:-translate-y-0.5 transition-all duration-200">
+            <div className="flex justify-between items-center pb-2 border-b border-slate-100 mb-2">
+              <span className="text-[10px] font-black text-slate-800">Breakfast Club</span>
+              <span className="text-[8px] font-bold text-brand-secondary font-mono">3m ago</span>
+            </div>
+            <div className="flex gap-2">
+              <div className="w-6.5 h-6.5 rounded-full bg-brand-accent text-white flex items-center justify-center text-[10px] font-black shrink-0">R</div>
+              <div>
+                <h4 className="text-[10px] font-black text-slate-800">Rama</h4>
+                <p className="text-[11px] text-slate-600 mt-0.5 font-semibold font-sans">Logged <span className="font-extrabold text-brand-primary">IceCream </span></p>
+              </div>
+            </div>
+          </div>
 
-          {/* Card B: Suhith reacted */}
+          {/* Card C: Suhith reacted */}
           <div className="w-full max-w-[200px] bg-white border-[3px] border-brand-primary rounded-[22px] p-4 shadow-[4px_4px_0_0_#6D001F] text-left transform sm:rotate-1 hover:rotate-0 hover:-translate-y-0.5 transition-all duration-200">
             <div className="flex gap-2.5 items-center">
               <div className="w-6.5 h-6.5 rounded-full bg-emerald-400 text-white flex items-center justify-center text-[10px] font-black shrink-0">S</div>
@@ -90,7 +104,7 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Card C: Adarsh moved to #1 */}
+          {/* Card D: Adarsh moved to #1 */}
           <div className="w-full max-w-[210px] bg-brand-primary border-[3px] border-brand-primary rounded-[22px] p-4 shadow-[4px_4px_0_0_#400012] text-left hover:-translate-y-0.5 transition-all duration-200">
             <div className="flex gap-2.5 items-center">
               <div className="w-6.5 h-6.5 rounded-full bg-white/20 text-white flex items-center justify-center text-[10px] font-black shrink-0">A</div>
