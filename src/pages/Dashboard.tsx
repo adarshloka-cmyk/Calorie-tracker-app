@@ -83,9 +83,9 @@ export default function Dashboard() {
     <div className="min-h-screen bg-[#F8F4EF] font-sans text-brand-text pb-20">
       {/* Header Navigation */}
       <header className="border-b-[3.5px] border-brand-primary bg-white py-4 sticky top-0 z-40">
-        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-4 sm:px-8 flex items-center justify-between">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/dashboard')}>
-            <span className="font-display font-black text-2xl tracking-tighter text-brand-primary">
+            <span className="font-display font-black text-2xl tracking-tighter text-brand-primary hover:opacity-90 transition-opacity">
               FITCLUB
             </span>
           </div>
@@ -93,14 +93,14 @@ export default function Dashboard() {
           <div className="flex items-center gap-4">
             <button 
               onClick={() => navigate('/profile')} 
-              className="flex items-center gap-2 px-4 py-2 border-2 border-brand-primary rounded-full hover:bg-[#F8F4EF] transition-all text-xs font-black text-brand-primary"
+              className="flex items-center gap-2 px-4 py-2 border-2 border-brand-primary rounded-full hover:bg-brand-primary hover:text-white transition-all duration-200 text-xs font-black text-brand-primary cursor-pointer"
             >
               <UserIcon className="w-4 h-4" />
               <span>{profile?.username}</span>
             </button>
             <button 
               onClick={signOut}
-              className="p-2.5 border-2 border-brand-primary rounded-full hover:bg-red-50 transition-all text-brand-primary"
+              className="p-2.5 border-2 border-brand-primary rounded-full hover:bg-brand-secondary hover:text-white transition-all duration-200 text-brand-primary cursor-pointer"
               title="Sign Out"
             >
               <LogOut className="w-4 h-4" />
@@ -110,22 +110,22 @@ export default function Dashboard() {
       </header>
 
       {/* Main Grid */}
-      <main className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-10">
+      <main className="max-w-6xl mx-auto px-4 sm:px-8 mt-8 sm:mt-12">
         {/* Welcome Section */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
-          <div>
-            <h1 className="font-display font-black text-2xl sm:text-5xl text-brand-primary tracking-tight">
+        <div className="border-b-[3px] border-brand-primary/10 pb-8 mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
+          <div className="space-y-1.5">
+            <h1 className="font-display font-black text-3xl sm:text-4xl lg:text-5xl text-brand-primary tracking-tight leading-tight">
               Welcome back, {profile?.username}.
             </h1>
-            <p className="text-sm font-bold text-brand-primary/60 mt-1">
+            <p className="text-sm sm:text-base font-bold text-brand-primary/60">
               Stay accountable. Keep logging calories with friends.
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-4 w-full md:w-auto">
+          <div className="flex gap-4 w-full sm:w-auto">
             <Button 
               variant="primary" 
-              className="py-2.5 px-6 text-sm flex-1 md:flex-initial"
+              className="py-2.5 px-6 text-sm flex-1 sm:flex-initial"
               onClick={() => setShowCreateModal(true)}
             >
               <Plus className="w-4.5 h-4.5 mr-1" />
@@ -135,10 +135,10 @@ export default function Dashboard() {
         </div>
 
         {/* Join Club Box & Clubs Listing */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 items-start">
           {/* Clubs List */}
           <div className="lg:col-span-2 space-y-6">
-            <h2 className="font-display font-black text-2xl text-brand-primary">
+            <h2 className="font-display font-black text-xl sm:text-2xl text-brand-primary tracking-tight">
               Your Active Clubs
             </h2>
 
@@ -147,16 +147,16 @@ export default function Dashboard() {
                 Loading your clubs...
               </div>
             ) : !clubs || clubs.length === 0 ? (
-              <Card hoverable={false} className="border-[3.5px] p-8 text-center bg-white">
+              <Card hoverable={false} className="border-[3.5px] p-8 sm:p-10 text-center bg-white shadow-[4px_4px_0_0_#6D001F] rounded-[24px]">
                 <Compass className="w-12 h-12 text-brand-accent mx-auto mb-4" />
                 <h3 className="font-display font-black text-xl text-brand-primary mb-2">
                   No clubs joined yet!
                 </h3>
-                <p className="text-sm font-bold text-brand-primary/60 mb-6 max-w-sm mx-auto">
+                <p className="text-sm font-bold text-brand-primary/60 mb-6 max-w-sm mx-auto leading-relaxed">
                   Diets fail when logged alone. Create your own private club or join one using an invite code.
                 </p>
-                <div className="flex justify-center gap-4">
-                  <Button variant="primary" className="py-2 text-sm" onClick={() => setShowCreateModal(true)}>
+                <div className="flex justify-center">
+                  <Button variant="primary" className="py-2.5 px-6 text-sm" onClick={() => setShowCreateModal(true)}>
                     Create Club
                   </Button>
                 </div>
@@ -166,26 +166,28 @@ export default function Dashboard() {
                 {clubs.map((club) => (
                   <Card 
                     key={club.id} 
-                    className="cursor-pointer border-[3.5px] p-6 hover:shadow-[6px_6px_0_0_#6D001F] transition-all flex flex-col justify-between min-h-[160px] h-auto"
+                    className="group cursor-pointer border-[3.5px] p-6 hover:shadow-[6px_6px_0_0_#6D001F] transition-all duration-200 flex flex-col justify-between min-h-[170px] h-auto rounded-[24px] bg-white"
                     onClick={() => navigate(`/club/${club.id}`)}
                   >
-                    <div>
-                      <div className="flex items-center gap-3 mb-2">
-                        <span className="text-3xl" role="img" aria-label="club emoji">
+                    <div className="space-y-4">
+                      <div className="flex items-start gap-4">
+                        <span className="flex-shrink-0 w-12 h-12 flex items-center justify-center text-2xl bg-[#F8F4EF] border-[2.5px] border-brand-primary rounded-xl shadow-[2px_2px_0_0_#6D001F]" role="img" aria-label="club emoji">
                           {club.emoji}
                         </span>
-                        <h3 className="font-display font-black text-xl text-brand-primary line-clamp-1">
-                          {club.name}
-                        </h3>
+                        <div className="min-w-0 flex-1 pt-0.5">
+                          <h3 className="font-display font-black text-lg sm:text-xl text-brand-primary line-clamp-1 leading-tight group-hover:text-brand-secondary transition-colors duration-200">
+                            {club.name}
+                          </h3>
+                          <p className="text-[11px] font-black text-brand-primary/40 uppercase tracking-wider mt-1.5">
+                            Invite Code: <span className="font-mono font-black text-brand-accent tracking-normal">{club.invite_code}</span>
+                          </p>
+                        </div>
                       </div>
-                      <p className="text-[11px] font-bold text-brand-primary/40 uppercase tracking-widest mt-1">
-                        Invite Code: <span className="font-mono text-brand-accent">{club.invite_code}</span>
-                      </p>
                     </div>
 
-                    <div className="flex items-center justify-between text-xs font-black text-brand-primary border-t border-brand-primary/10 pt-4 mt-auto">
-                      <span className="flex items-center gap-1">
-                        <Users className="w-3.5 h-3.5" />
+                    <div className="flex items-center justify-between text-xs font-black text-brand-primary border-t border-brand-primary/10 pt-4 mt-6">
+                      <span className="flex items-center gap-2 text-brand-primary/70 group-hover:text-brand-primary transition-colors duration-200">
+                        <Users className="w-4 h-4" />
                         <span>Feed & Leaderboard</span>
                       </span>
                     </div>
@@ -197,11 +199,11 @@ export default function Dashboard() {
 
           {/* Join Club sidebar */}
           <div className="space-y-6">
-            <h2 className="font-display font-black text-2xl text-brand-primary">
+            <h2 className="font-display font-black text-xl sm:text-2xl text-brand-primary tracking-tight">
               Join with Code
             </h2>
 
-            <Card hoverable={false} className="border-[3.5px] p-6 bg-white">
+            <Card hoverable={false} className="border-[3.5px] p-6 bg-white shadow-[4px_4px_0_0_#6D001F] rounded-[24px]">
               <h3 className="font-display font-black text-lg text-brand-primary mb-2">
                 Have an Invite?
               </h3>
@@ -210,7 +212,7 @@ export default function Dashboard() {
               </p>
 
               {joinError && (
-                <div className="mb-4 p-3 bg-red-50 border-2 border-brand-secondary/20 rounded-xl text-xs font-bold text-brand-secondary">
+                <div className="mb-4 p-3.5 bg-red-50 border-2 border-brand-secondary/20 rounded-xl text-xs font-bold text-brand-secondary leading-relaxed">
                   {joinError}
                 </div>
               )}
@@ -222,12 +224,12 @@ export default function Dashboard() {
                   onChange={(e) => setInviteCode(e.target.value)}
                   placeholder="ABCD123"
                   maxLength={7}
-                  className="block w-full text-center tracking-widest uppercase font-mono font-black text-xl py-3 border-[3px] border-brand-primary rounded-xl focus:outline-none focus:ring-0 bg-[#F8F4EF]/50 placeholder-brand-primary/20"
+                  className="block w-full text-center tracking-widest uppercase font-mono font-black text-xl py-3 border-[3px] border-brand-primary rounded-xl focus:outline-none focus:border-brand-accent focus:bg-white transition-all duration-200 bg-[#F8F4EF]/50 placeholder-brand-primary/20"
                 />
                 <Button
                   type="submit"
                   variant="secondary"
-                  className="w-full py-2.5 text-sm"
+                  className="w-full py-3 text-sm transition-all duration-200"
                   disabled={isJoining}
                 >
                   {isJoining ? 'Joining...' : 'Join Club'}
@@ -241,13 +243,13 @@ export default function Dashboard() {
       {/* Create Club Modal */}
       {showCreateModal && (
         <div className="fixed inset-0 z-50 bg-brand-primary/40 backdrop-blur-sm flex items-center justify-center p-4">
-          <Card hoverable={false} className="w-full max-w-md border-[3.5px] p-6 bg-white relative animate-in fade-in zoom-in-95 duration-150">
+          <Card hoverable={false} className="w-full max-w-md border-[3.5px] p-6 sm:p-8 bg-white relative animate-in fade-in zoom-in-95 duration-150 shadow-[6px_6px_0_0_#6D001F] rounded-[24px]">
             <h3 className="font-display font-black text-2xl text-brand-primary mb-4">
               Create a Club
             </h3>
 
             {createError && (
-              <div className="mb-4 p-3 bg-red-50 border-2 border-brand-secondary/20 rounded-xl text-xs font-bold text-brand-secondary">
+              <div className="mb-4 p-3.5 bg-red-50 border-2 border-brand-secondary/20 rounded-xl text-xs font-bold text-brand-secondary leading-relaxed">
                 {createError}
               </div>
             )}
@@ -263,10 +265,10 @@ export default function Dashboard() {
                       key={emoji}
                       type="button"
                       onClick={() => setClubEmoji(emoji)}
-                      className={`text-2xl p-1.5 rounded-lg transition-transform hover:scale-110 flex items-center justify-center ${
+                      className={`text-2xl p-1.5 rounded-lg transition-all duration-200 flex items-center justify-center ${
                         clubEmoji === emoji 
-                          ? 'border-2 border-brand-accent bg-white scale-105' 
-                          : 'opacity-70 hover:opacity-100'
+                          ? 'border-[2px] border-brand-primary bg-white shadow-[2px_2px_0_0_#FF6B00] scale-105 opacity-100' 
+                          : 'border-[2px] border-transparent opacity-70 hover:opacity-100 hover:scale-110'
                       }`}
                     >
                       {emoji}
@@ -285,7 +287,7 @@ export default function Dashboard() {
                   value={clubName}
                   onChange={(e) => setClubName(e.target.value)}
                   placeholder="e.g. Sunday Runners"
-                  className="block w-full px-3 py-3 border-[3px] border-brand-primary rounded-xl focus:outline-none focus:ring-0 text-sm font-bold bg-[#F8F4EF]/50 placeholder-brand-primary/30"
+                  className="block w-full px-4 py-3 border-[3px] border-brand-primary rounded-xl focus:outline-none focus:border-brand-accent focus:bg-white transition-all duration-200 text-sm font-bold bg-[#F8F4EF]/50 placeholder-brand-primary/30"
                 />
               </div>
 
@@ -293,7 +295,7 @@ export default function Dashboard() {
                 <Button
                   type="button"
                   variant="ghost"
-                  className="flex-1 py-2 text-sm text-brand-primary border border-brand-primary/10"
+                  className="flex-1 py-2.5 text-sm text-brand-primary border-2 border-brand-primary/10 hover:border-brand-primary/30 transition-all duration-200"
                   onClick={() => {
                     setShowCreateModal(false);
                     setClubName('');
@@ -304,7 +306,7 @@ export default function Dashboard() {
                 <Button
                   type="submit"
                   variant="primary"
-                  className="flex-1 py-2 text-sm"
+                  className="flex-1 py-2.5 text-sm"
                   disabled={createClubMutation.isPending}
                 >
                   {createClubMutation.isPending ? 'Creating...' : 'Create'}
